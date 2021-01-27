@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/sirupsen/logrus"
-	"github.com/tecnologer/sudoku/clients/api/router"
+	"github.com/tecnologer/sudoku/clients/sudoku-api/router"
 )
 
 var (

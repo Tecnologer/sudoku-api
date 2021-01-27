@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sudoku "github.com/tecnologer/sudoku/src"
+	sudoku "github.com/tecnologer/sudoku/sudoku-lib/src"
 )
 
 var (

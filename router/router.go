@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/tecnologer/sudoku/clients/api/middleware"
+	"github.com/tecnologer/sudoku/clients/sudoku-api/middleware"
 )
 
 //Router provides a new router instance
