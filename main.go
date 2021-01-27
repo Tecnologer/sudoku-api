@@ -20,6 +20,7 @@ func main() {
 	if *verbouse {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
+	logrus.Debug("debugging")
 
 	host := fmt.Sprintf(":%d", *port)
 
