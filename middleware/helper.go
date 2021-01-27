@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 func setupCorsResponse(w *http.ResponseWriter, req *http.Request) {
@@ -29,16 +31,22 @@ func newMsgResf(format string, v ...interface{}) []byte {
 }
 
 func preconditionFailedf(w *http.ResponseWriter, format string, v ...interface{}) {
+	logrus.Debugf("precondition failed: "+format, v...)
+
 	(*w).WriteHeader(http.StatusPreconditionFailed)
 	(*w).Write(newMsgResf(format, v...))
 }
 
 func internalErrorf(w *http.ResponseWriter, format string, v ...interface{}) {
+	logrus.Debugf("error: "+format, v...)
+
 	(*w).WriteHeader(http.StatusInternalServerError)
 	(*w).Write(newMsgResf(format, v...))
 }
 
 func ok(w *http.ResponseWriter, data []byte) {
 	(*w).WriteHeader(http.StatusOK)
-	(*w).Write(data)
+	if data != nil {
+		(*w).Write(data)
+	}
 }
