@@ -2,6 +2,10 @@
 
 Expose Sudoku game as ResAPI.
 
+## Dependencies
+
++ [sudoku][1]: `go get -u github.com/tecnologer/sudoku-lib` 
+
 ## Endpoints
 
 - `/api/game?level=<level>`: returns a game with the level specified
@@ -52,3 +56,5 @@ Expose Sudoku game as ResAPI.
     "count": number
   }
   ```
+
+[1]: https://github.com/Tecnologer/sudoku-lib
