@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "board": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        }
+      }
+    },
+    "level": {
+      "type": "string"
+    },
+    "start_time": {
+      "type": "string"
+    },
+    "locked_coordinates": {
+      "type": ["array","null"],
+      "items": {
+        "type": ["object","null"],
+        "properties": {
+          "x": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          },
+          "y": {
+            "type": "integer",
+            "enum": [
+                0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      }
+    }
+  },
+  "required": [
+    "board",
+    "level",
+    "start_time",
+    "locked_coordinates"
+  ]
+}
