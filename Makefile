@@ -18,3 +18,6 @@ linux:
 
 darwin:
 	GOOS=darwin go build -ldflags "-X main.minversion=`date -u $(formatVersion)` -X main.version=$(version)" -o darwin-$(binName)
+
+v:
+	./sudoku-api -v
