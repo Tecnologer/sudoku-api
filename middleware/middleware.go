@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/sirupsen/logrus"
-	sudoku "github.com/tecnologer/sudoku/sudoku-lib/src"
+	sudoku "github.com/tecnologer/sudoku-lib/src"
 )
 
 var (
