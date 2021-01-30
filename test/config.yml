@@ -1,0 +1,4 @@
+server:
+  scheme: http
+  host: localhost
+  port: 8088
