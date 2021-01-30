@@ -65,9 +65,9 @@ func SetValue(w http.ResponseWriter, r *http.Request) {
 
 	x, err := strconv.Atoi(xStr[0])
 	if err != nil || x == -1 || x > 8 {
-		msg := newMsgResf("the value for x (%d) is not valid", x)
+		msg := newMsgResf(http.StatusPreconditionFailed, "the value for x (%d) is not valid", x)
 		if err != nil {
-			msg = newMsgResf("the value for x should be number between 1 and 9")
+			msg = newMsgResf(http.StatusPreconditionFailed, "the value for x should be number between 1 and 9")
 		}
 
 		w.WriteHeader(http.StatusPreconditionFailed)
@@ -75,11 +75,11 @@ func SetValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	y, err := strconv.Atoi(xStr[0])
+	y, err := strconv.Atoi(yStr[0])
 	if err != nil || y == -1 || y > 8 {
-		msg := newMsgResf("the value for y (%d) is not valid", y)
+		msg := newMsgResf(http.StatusPreconditionFailed, "the value for y (%d) is not valid", y)
 		if err != nil {
-			msg = newMsgResf("the value for y should be number between 1 and 9")
+			msg = newMsgResf(http.StatusPreconditionFailed, "the value for y should be number between 1 and 9")
 		}
 
 		w.WriteHeader(http.StatusPreconditionFailed)
@@ -87,11 +87,11 @@ func SetValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	n, err := strconv.Atoi(xStr[0])
-	if err != nil || n == -1 || n > 8 {
-		msg := newMsgResf("the value for cell (%d) is not valid", n)
+	n, err := strconv.Atoi(nStr[0])
+	if err != nil || n < 1 || n > 9 {
+		msg := newMsgResf(http.StatusPreconditionFailed, "the value for cell (%d) is not valid", n)
 		if err != nil {
-			msg = newMsgResf("the value for cell should be number between 1 and 9")
+			msg = newMsgResf(http.StatusPreconditionFailed, "the value for cell should be number between 1 and 9")
 		}
 
 		w.WriteHeader(http.StatusPreconditionFailed)
@@ -106,14 +106,19 @@ func SetValue(w http.ResponseWriter, r *http.Request) {
 		"client": r.Header.Get("User-Agent"),
 	}).Debug("set value")
 
-	if !game.IsCoordinateLockedXY(x, y) {
+	if game.IsCoordinateLockedXY(x, y) {
 		preconditionFailedf(&w, "the coordinate (%d, %d) cannot be modified", x, y)
 		return
 	}
 
 	game.Set(x, y, n)
+	gameBin, err := json.Marshal(game)
+	if err != nil {
+		internalErrorf(&w, "error updating the game: %v", err)
+		return
+	}
 
-	ok(&w, nil)
+	ok(&w, gameBin)
 }
 
 //GetLevels returns the available levels
@@ -128,4 +133,20 @@ func GetLevels(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ok(&w, levels)
+}
+
+//Validate returns the available levels
+func Validate(w http.ResponseWriter, r *http.Request) {
+	setupCorsResponse(&w, r)
+	logrus.WithField("client", r.Header.Get("User-Agent")).Debug("validate")
+
+	checkEmpties := getParamBool("empty", false, r)
+	errs := game.Validate(checkEmpties)
+
+	resp, err := json.Marshal(errs)
+	if err != nil {
+		internalErrorf(&w, "validating: parsing response to json. %v", err)
+		return
+	}
+	ok(&w, resp)
 }
