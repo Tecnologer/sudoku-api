@@ -4,7 +4,7 @@ Expose Sudoku game as ResAPI.
 
 ## Dependencies
 
-+ [sudoku][1]: `go get -u github.com/tecnologer/sudoku-lib` 
+- [sudoku][1]: `go get -u github.com/tecnologer/sudoku-lib`
 
 ## Endpoints
 
