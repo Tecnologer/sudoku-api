@@ -14,11 +14,13 @@ func setupCorsResponse(w *http.ResponseWriter, req *http.Request) {
 	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
 }
 
-func newMsgRes(msg string) []byte {
+func newMsgRes(status int, msg string) []byte {
 	err := struct {
 		Message string `json:"message"`
+		Status  int    `json:"status"`
 	}{
 		Message: msg,
+		Status:  status,
 	}
 
 	errBody, _ := json.Marshal(err)
@@ -26,22 +28,22 @@ func newMsgRes(msg string) []byte {
 	return errBody
 }
 
-func newMsgResf(format string, v ...interface{}) []byte {
-	return newMsgRes(fmt.Sprintf(format, v...))
+func newMsgResf(status int, format string, v ...interface{}) []byte {
+	return newMsgRes(status, fmt.Sprintf(format, v...))
 }
 
 func preconditionFailedf(w *http.ResponseWriter, format string, v ...interface{}) {
 	logrus.Debugf("precondition failed: "+format, v...)
 
 	(*w).WriteHeader(http.StatusPreconditionFailed)
-	(*w).Write(newMsgResf(format, v...))
+	(*w).Write(newMsgResf(http.StatusPreconditionFailed, format, v...))
 }
 
 func internalErrorf(w *http.ResponseWriter, format string, v ...interface{}) {
 	logrus.Debugf("error: "+format, v...)
 
 	(*w).WriteHeader(http.StatusInternalServerError)
-	(*w).Write(newMsgResf(format, v...))
+	(*w).Write(newMsgResf(http.StatusInternalServerError, format, v...))
 }
 
 func ok(w *http.ResponseWriter, data []byte) {
