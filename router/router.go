@@ -13,7 +13,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/api/game/set", middleware.SetValue).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/game/levels", middleware.GetLevels).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/game/validate", middleware.Validate).Methods("GET", "OPTIONS")
-	// router.HandleFunc("/api/game/solve", middleware.solve).Methods("GET", "OPTIONS")
+	router.HandleFunc("/api/game/solve", middleware.Solve).Methods("GET", "OPTIONS")
 
 	return router
 }

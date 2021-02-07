@@ -44,6 +44,10 @@ func NewGame(w http.ResponseWriter, r *http.Request) {
 //SetValue starts new sudoku game
 func SetValue(w http.ResponseWriter, r *http.Request) {
 	setupCorsResponse(&w, r)
+	var err error
+	if game == nil {
+		return
+	}
 
 	xStr, provided := getParam("x", r)
 	if !provided || len(xStr) == 0 {
@@ -87,8 +91,15 @@ func SetValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	n, err := strconv.Atoi(nStr[0])
-	if err != nil || n < 1 || n > 9 {
+	var n int
+	if nStr[0] != "" {
+		n, err = strconv.Atoi(nStr[0])
+	} else {
+		n = 0
+		err = nil
+	}
+
+	if err != nil || n < 0 || n > 9 {
 		msg := newMsgResf(http.StatusPreconditionFailed, "the value for cell (%d) is not valid", n)
 		if err != nil {
 			msg = newMsgResf(http.StatusPreconditionFailed, "the value for cell should be number between 1 and 9")
@@ -149,4 +160,19 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ok(&w, resp)
+}
+
+//Solve returns the game solved
+func Solve(w http.ResponseWriter, r *http.Request) {
+	setupCorsResponse(&w, r)
+	logrus.WithField("client", r.Header.Get("User-Agent")).Debug("solve")
+
+	game.Solve()
+	gameBin, err := json.Marshal(game)
+	if err != nil {
+		internalErrorf(&w, "error solving the game: %v", err)
+		return
+	}
+
+	ok(&w, gameBin)
 }
