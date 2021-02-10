@@ -92,7 +92,7 @@ INFO[0000] Starting server on :80...
       "column": "[{x,y}]",
       "empty": "[{x,y}]"
     },
-    "count": number
+    "count": "number"
   }
   ```
 
