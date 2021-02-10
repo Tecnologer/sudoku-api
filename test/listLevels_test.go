@@ -24,7 +24,9 @@ func TestListLevels(t *testing.T) {
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
-
+	if err != nil {
+		t.Fail()
+	}
 	bodyJSON := gojsonschema.NewStringLoader(string(body))
 	schema := gojsonschema.NewReferenceLoader("file://./schema/list-levels.json")
 
