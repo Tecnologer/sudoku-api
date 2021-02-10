@@ -4,3 +4,4 @@ sudoku-api
 *.exe
 /darwin-sudoku-api
 /linux-sudoku-api
+.vscode/
