@@ -46,6 +46,13 @@ func internalErrorf(w *http.ResponseWriter, format string, v ...interface{}) {
 	(*w).Write(newMsgResf(http.StatusInternalServerError, format, v...))
 }
 
+func unauthorizedErrorf(w *http.ResponseWriter, format string, v ...interface{}) {
+	logrus.Debugf("error: "+format, v...)
+
+	(*w).WriteHeader(http.StatusUnauthorized)
+	(*w).Write(newMsgResf(http.StatusUnauthorized, format, v...))
+}
+
 func ok(w *http.ResponseWriter, data []byte) {
 	(*w).WriteHeader(http.StatusOK)
 	if data != nil {

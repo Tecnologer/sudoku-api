@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	game *sudoku.Game
+	games = map[string]*sudoku.Game{}
 )
 
 //NewGame starts new sudoku game
@@ -31,13 +31,20 @@ func NewGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	game = sudoku.NewGame(level)
+	token, err := getToken(r)
+	if err != nil {
+		unauthorizedErrorf(&w, "Not authorized")
+		return
+	}
+
+	game := sudoku.NewGame(level)
 	gameBin, err := json.Marshal(game)
 	if err != nil {
 		internalErrorf(&w, "error creating the game: %v", err)
 		return
 	}
 
+	games[token.Raw] = game
 	ok(&w, gameBin)
 }
 
@@ -45,6 +52,15 @@ func NewGame(w http.ResponseWriter, r *http.Request) {
 func SetValue(w http.ResponseWriter, r *http.Request) {
 	setupCorsResponse(&w, r)
 	var err error
+
+	token, err := getToken(r)
+	if err != nil {
+		unauthorizedErrorf(&w, "Not authorized")
+		return
+	}
+
+	game := games[token.Raw]
+
 	if game == nil {
 		return
 	}
@@ -150,6 +166,13 @@ func GetLevels(w http.ResponseWriter, r *http.Request) {
 func Validate(w http.ResponseWriter, r *http.Request) {
 	setupCorsResponse(&w, r)
 	logrus.WithField("client", r.Header.Get("User-Agent")).Debug("validate")
+	token, err := getToken(r)
+	if err != nil {
+		unauthorizedErrorf(&w, "Not authorized")
+		return
+	}
+
+	game := games[token.Raw]
 
 	checkEmpties := getParamBool("empty", false, r)
 	errs := game.Validate(checkEmpties)
@@ -166,6 +189,14 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 func Solve(w http.ResponseWriter, r *http.Request) {
 	setupCorsResponse(&w, r)
 	logrus.WithField("client", r.Header.Get("User-Agent")).Debug("solve")
+
+	token, err := getToken(r)
+	if err != nil {
+		unauthorizedErrorf(&w, "Not authorized")
+		return
+	}
+
+	game := games[token.Raw]
 
 	game.Solve()
 	gameBin, err := json.Marshal(game)
