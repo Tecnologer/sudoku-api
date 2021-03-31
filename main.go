@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/sirupsen/logrus"
+	"github.com/tecnologer/go-secrets"
+	"github.com/tecnologer/go-secrets/config"
 	"github.com/tecnologer/sudoku/clients/sudoku-api/router"
 )
 
@@ -15,6 +17,9 @@ var (
 )
 
 func main() {
+
+	secrets.InitWithConfig(&config.Config{})
+
 	checkVersion()
 
 	if *verbouse {
