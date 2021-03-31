@@ -5,3 +5,4 @@ sudoku-api
 /darwin-sudoku-api
 /linux-sudoku-api
 .vscode/
+*.s3db
